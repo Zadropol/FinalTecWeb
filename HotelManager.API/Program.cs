@@ -9,8 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using MySql.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-// Registrar repositorios
-builder.Services.AddTransient<IReservaRepository, ReservaRepository>();
+// ⭐ Registrar Unit of Work (reemplaza los repositorios individuales)
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+
 
 // ⭐ Registrar AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));

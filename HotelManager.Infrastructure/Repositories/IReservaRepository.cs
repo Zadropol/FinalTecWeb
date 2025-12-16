@@ -8,18 +8,15 @@ using System.Text;
 
 namespace HotelManager.Infrastructure.Repositories
 {
-    public class ReservaRepository : IReservaRepository
+    public class ReservaRepository : BaseRepository<Reserva>, IReservaRepository
     {
-        private readonly HotelContext _context;
-
-        public ReservaRepository(HotelContext context)
+        public ReservaRepository(HotelContext context) : base(context)
         {
-            _context = context;
         }
 
         public async Task<IEnumerable<Reserva>> GetAllReservasAsync()
         {
-            return await _context.Reservas
+            return await _entities
                 .Include(r => r.Huesped)
                 .Include(r => r.Habitacion)
                 .Include(r => r.TipoHabitacion)
@@ -28,7 +25,7 @@ namespace HotelManager.Infrastructure.Repositories
 
         public async Task<Reserva?> GetReservaByIdAsync(int id)
         {
-            return await _context.Reservas
+            return await _entities
                 .Include(r => r.Huesped)
                 .Include(r => r.Habitacion)
                 .Include(r => r.TipoHabitacion)
@@ -37,7 +34,7 @@ namespace HotelManager.Infrastructure.Repositories
 
         public async Task<Reserva?> GetReservaByCodigoAsync(string codigo)
         {
-            return await _context.Reservas
+            return await _entities
                 .Include(r => r.Huesped)
                 .Include(r => r.Habitacion)
                 .Include(r => r.TipoHabitacion)
@@ -46,20 +43,20 @@ namespace HotelManager.Infrastructure.Repositories
 
         public async Task InsertReserva(Reserva reserva)
         {
-            _context.Reservas.Add(reserva);
-            await _context.SaveChangesAsync();
+            await Add(reserva);
+            // ❌ NO hacer SaveChanges aquí, lo maneja el UnitOfWork
         }
 
         public async Task UpdateReserva(Reserva reserva)
         {
-            _context.Reservas.Update(reserva);
-            await _context.SaveChangesAsync();
+            Update(reserva);
+            // ❌ NO hacer SaveChanges aquí, lo maneja el UnitOfWork
         }
 
         public async Task DeleteReserva(Reserva reserva)
         {
-            _context.Reservas.Remove(reserva);
-            await _context.SaveChangesAsync();
+            await Delete(reserva.IdReserva);
+            // ❌ NO hacer SaveChanges aquí, lo maneja el UnitOfWork
         }
     }
 }

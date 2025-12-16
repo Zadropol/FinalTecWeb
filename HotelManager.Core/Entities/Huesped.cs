@@ -7,10 +7,14 @@ using System.Text;
 namespace HotelManager.Core.Entities
 {
     [Table("Huesped")]
-    public class Huesped
+    public class Huesped : BaseEntity
     {
         [Key]
-        public int IdHuesped { get; set; }
+        public int IdHuesped {
+            get => Id;
+            set => Id = value;
+
+        }
 
         [Required]
         [StringLength(100)]
