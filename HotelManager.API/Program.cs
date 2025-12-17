@@ -16,6 +16,7 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
 builder.Services.AddTransient<IReservaService, ReservaService>();
+builder.Services.AddTransient<ICheckInOutService, CheckInOutService>();
 
 // ⭐ Registrar AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));

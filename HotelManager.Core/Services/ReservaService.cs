@@ -1,6 +1,8 @@
-﻿using HotelManager.Core.Entities;
+﻿using HotelManager.Core.CustomEntities;
+using HotelManager.Core.Entities;
 using HotelManager.Core.Exceptions;
 using HotelManager.Core.Interfaces;
+using HotelManager.Core.QueryFilters;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,10 +18,32 @@ namespace HotelManager.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Reserva>> GetAllReservasAsync()
+        public async Task<PagedList<Reserva>> GetReservasAsync(ReservaQueryFilter filters)
         {
-            return await _unitOfWork.ReservaRepository.GetAllReservasAsync();
+            var reservas = await _unitOfWork.ReservaRepository.GetAllReservasAsync();
+
+            if (!string.IsNullOrEmpty(filters.Estado))
+                reservas = reservas.Where(r => r.Estado == filters.Estado);
+
+            if (filters.IdHuesped.HasValue)
+                reservas = reservas.Where(r => r.IdHuesped == filters.IdHuesped);
+
+            if (filters.FechaDesde.HasValue)
+                reservas = reservas.Where(r => r.FechaCheckIn >= filters.FechaDesde);
+
+            if (filters.FechaHasta.HasValue)
+                reservas = reservas.Where(r => r.FechaCheckOut <= filters.FechaHasta);
+
+            var totalRecords = reservas.Count();
+
+            var paged = reservas
+                .Skip((filters.Page - 1) * filters.PageSize)
+                .Take(filters.PageSize)
+                .ToList();
+
+            return new PagedList<Reserva>(paged, totalRecords);
         }
+
 
         public async Task<Reserva?> GetReservaByIdAsync(int id)
         {
