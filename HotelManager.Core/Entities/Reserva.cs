@@ -10,6 +10,7 @@ namespace HotelManager.Core.Entities
     public class Reserva : BaseEntity
     {
         [Key]
+        [Column("IdReserva")]
         public int IdReserva {
             get => Id;
             set => Id = value;

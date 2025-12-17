@@ -3,6 +3,7 @@ using HotelManager.Core.DTOs;
 using HotelManager.Core.Entities;
 using HotelManager.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace HotelManager.API.Controllers
 {
@@ -10,11 +11,11 @@ namespace HotelManager.API.Controllers
     [ApiController]
     public class ReservasController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IReservaService _reservaService;
         private readonly IMapper _mapper;
-        public ReservasController(IUnitOfWork unitOfWork, IMapper mapper)
+        public ReservasController(IReservaService reservaService, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
+            _reservaService = reservaService;
             _mapper = mapper;
         }
 
@@ -22,10 +23,8 @@ namespace HotelManager.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetReservas()
         {
-            var reservas = await _unitOfWork.ReservaRepository.GetAllReservasAsync();
-
+            var reservas = await _reservaService.GetAllReservasAsync();
             var reservasDto = _mapper.Map<IEnumerable<ReservaDto>>(reservas);
-
             return Ok(reservasDto);
         }
 
@@ -33,13 +32,12 @@ namespace HotelManager.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetReserva(int id)
         {
-            var reserva = await _unitOfWork.ReservaRepository.GetReservaByIdAsync(id);
+            var reserva = await _reservaService.GetReservaByIdAsync(id);
 
             if (reserva == null)
                 return NotFound();
 
             var reservaDto = _mapper.Map<ReservaDto>(reserva);
-
             return Ok(reservaDto);
         }
 
@@ -48,11 +46,10 @@ namespace HotelManager.API.Controllers
         public async Task<IActionResult> CreateReserva(ReservaDto reservaDto)
         {
             var reserva = _mapper.Map<Reserva>(reservaDto);
-            await _unitOfWork.ReservaRepository.InsertReserva(reserva);
-            await _unitOfWork.SaveChangesAsync();
+            await _reservaService.InsertReserva(reserva);
 
             var reservaCreada = _mapper.Map<ReservaDto>(reserva);
-            return Ok(reserva);
+            return Ok(reservaCreada);
         }
 
         // PUT: api/Reservas/5
@@ -62,27 +59,17 @@ namespace HotelManager.API.Controllers
             if (id != reservaDto.IdReserva)
                 return BadRequest("El ID no coincide");
 
-            var reservaExistente = await _unitOfWork.ReservaRepository.GetReservaByIdAsync(id);
-            if (reservaExistente == null)
-                return NotFound();
-
             var reserva = _mapper.Map<Reserva>(reservaDto);
-            await _unitOfWork.ReservaRepository.UpdateReserva(reserva);
-            await _unitOfWork.SaveChangesAsync();
+            await _reservaService.UpdateReserva(reserva);
 
-            return Ok(reserva);
+            return Ok(reservaDto);
         }
 
         // DELETE: api/Reservas/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReserva(int id)
         {
-            var reserva = await _unitOfWork.ReservaRepository.GetReservaByIdAsync(id);
-            if (reserva == null)
-                return NotFound();
-
-            await _unitOfWork.ReservaRepository.DeleteReserva(reserva);
-            await _unitOfWork.SaveChangesAsync();
+            await _reservaService.DeleteReserva(id);
             return NoContent();
         }
     }

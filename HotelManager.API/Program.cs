@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using HotelManager.Core.Interfaces;
+using HotelManager.Core.Services;
 using HotelManager.Infrastructure.Data;
+using HotelManager.Infrastructure.Filters;
 using HotelManager.Infrastructure.Mappings;
 using HotelManager.Infrastructure.Repositories;
 using HotelManager.Infrastructure.Services;
@@ -13,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
+builder.Services.AddTransient<IReservaService, ReservaService>();
 
 // ⭐ Registrar AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -30,7 +33,8 @@ builder.Services.AddDbContext<HotelContext>(options =>
 // Add services to the container.
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add<HotelManager.Infrastructure.Filters.ValidationFilter>();
+    options.Filters.Add<GlobalExceptionFilter>(); // 👈 Agregar filtro de excepciones
+    options.Filters.Add<ValidationFilter>();
 }).ConfigureApiBehaviorOptions(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
