@@ -58,5 +58,17 @@ namespace HotelManager.Infrastructure.Repositories
             await Delete(reserva.IdReserva);
             // ❌ NO hacer SaveChanges aquí, lo maneja el UnitOfWork
         }
+
+        public async Task<IEnumerable<Reserva>> GetReservasByFechasAsync(DateTime fechaInicio, DateTime fechaFin)
+        {
+            return await _entities
+                .Include(r => r.Huesped)
+                .Include(r => r.Habitacion)
+                    .ThenInclude(h => h.TipoHabitacion)
+                .Include(r => r.TipoHabitacion)
+                .Where(r => r.FechaCheckIn <= fechaFin && r.FechaCheckOut >= fechaInicio)
+                .ToListAsync();
+        }
+
     }
 }

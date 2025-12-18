@@ -136,8 +136,10 @@ namespace HotelManager.Core.Services
             DateTime fechaInicio,
             DateTime fechaFin)
         {
-            var todasHabitaciones = _unitOfWork.HabitacionRepository.GetAll();
+            var todasHabitaciones = await _unitOfWork.HabitacionRepository.GetAllConTipoAsync();
             var habitacionesDisponibles = new List<Habitacion>();
+
+            var todasReservas = await _unitOfWork.ReservaRepository.GetAllReservasAsync();
 
             foreach (var habitacion in todasHabitaciones)
             {
@@ -145,8 +147,7 @@ namespace HotelManager.Core.Services
                     continue;
 
                 // Verificar si hay reservas en conflicto
-                var reservasHabitacion = await _unitOfWork.ReservaRepository.GetAllReservasAsync();
-                var tieneConflicto = reservasHabitacion.Any(r =>
+                var tieneConflicto = todasReservas.Any(r =>
                     r.IdHabitacion == habitacion.IdHabitacion &&
                     r.Estado != "Cancelada" &&
                     r.Estado != "Completada" &&
@@ -186,5 +187,8 @@ namespace HotelManager.Core.Services
             var totalServicios = reservaServicios.Sum(rs => rs.SubTotal);
             return reserva.MontoTotal + totalServicios;
         }
+
+
+
     }
 }

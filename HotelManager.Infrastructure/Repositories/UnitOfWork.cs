@@ -12,7 +12,7 @@ namespace HotelManager.Infrastructure.Repositories
         private readonly HotelContext _context;
         private readonly IReservaRepository? _reservaRepository;
         private readonly IBaseRepository<Huesped>? _huespedRepository;
-        private readonly IBaseRepository<Habitacion>? _habitacionRepository;
+        private readonly IHabitacionRepository? _habitacionRepository;
         private readonly IBaseRepository<TipoHabitacion>? _tipoHabitacionRepository;
         private readonly IBaseRepository<Pago>? _pagoRepository;
         private readonly IBaseRepository<Servicio>? _servicioRepository;
@@ -28,8 +28,8 @@ namespace HotelManager.Infrastructure.Repositories
         public IBaseRepository<Huesped> HuespedRepository =>
             _huespedRepository ?? new BaseRepository<Huesped>(_context);
 
-        public IBaseRepository<Habitacion> HabitacionRepository =>
-            _habitacionRepository ?? new BaseRepository<Habitacion>(_context);
+        public IHabitacionRepository HabitacionRepository =>
+            _habitacionRepository ?? new HabitacionRepository(_context);
 
         public IBaseRepository<TipoHabitacion> TipoHabitacionRepository =>
             _tipoHabitacionRepository ?? new BaseRepository<TipoHabitacion>(_context);

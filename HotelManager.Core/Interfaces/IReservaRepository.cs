@@ -13,5 +13,8 @@ namespace HotelManager.Core.Interfaces
         Task InsertReserva(Reserva reserva);
         Task UpdateReserva(Reserva reserva);
         Task DeleteReserva(Reserva reserva);
+
+        Task<IEnumerable<Reserva>> GetReservasByFechasAsync(DateTime fechaInicio, DateTime fechaFin); // 👈 Nuevo
+
     }
 }

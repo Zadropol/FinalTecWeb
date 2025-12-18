@@ -9,7 +9,7 @@ namespace HotelManager.Core.Interfaces
     {
         IReservaRepository ReservaRepository { get; }
         IBaseRepository<Huesped> HuespedRepository { get; }
-        IBaseRepository<Habitacion> HabitacionRepository { get; }
+        IHabitacionRepository HabitacionRepository { get; }
         IBaseRepository<TipoHabitacion> TipoHabitacionRepository { get; }
         IBaseRepository<Pago> PagoRepository { get; }
         IBaseRepository<Servicio> ServicioRepository { get; }
