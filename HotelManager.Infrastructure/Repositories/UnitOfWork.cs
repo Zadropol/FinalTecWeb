@@ -16,6 +16,7 @@ namespace HotelManager.Infrastructure.Repositories
         private readonly IBaseRepository<TipoHabitacion>? _tipoHabitacionRepository;
         private readonly IBaseRepository<Pago>? _pagoRepository;
         private readonly IBaseRepository<Servicio>? _servicioRepository;
+        private readonly IBaseRepository<Usuario>? _usuarioRepository;
 
         public UnitOfWork(HotelContext context)
         {
@@ -39,6 +40,9 @@ namespace HotelManager.Infrastructure.Repositories
 
         public IBaseRepository<Servicio> ServicioRepository =>
             _servicioRepository ?? new BaseRepository<Servicio>(_context);
+
+        public IBaseRepository<Usuario> UsuarioRepository =>
+           _usuarioRepository ?? new BaseRepository<Usuario>(_context);
 
         public void SaveChanges()
         {

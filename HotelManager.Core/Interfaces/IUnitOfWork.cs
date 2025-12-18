@@ -13,7 +13,7 @@ namespace HotelManager.Core.Interfaces
         IBaseRepository<TipoHabitacion> TipoHabitacionRepository { get; }
         IBaseRepository<Pago> PagoRepository { get; }
         IBaseRepository<Servicio> ServicioRepository { get; }
-
+        IBaseRepository<Usuario> UsuarioRepository { get; }
         void SaveChanges();
         Task SaveChangesAsync();
     }
